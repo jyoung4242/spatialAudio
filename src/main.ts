@@ -4,8 +4,9 @@ import "./style.css";
 import { UI } from "@peasy-lib/peasy-ui";
 import { Engine, DisplayMode } from "excalibur";
 import { model, template } from "./UI/UI";
-import { noisyActor } from "./Actors/noisemaker";
-import { player } from "./Actors/player";
+import { Player } from "./Actors/player";
+import { loader, Resources } from "./resources";
+import { Noisemaker } from "./Actors/noisemaker";
 
 await UI.create(document.body, model, template).attached;
 
@@ -17,9 +18,18 @@ const game = new Engine({
   pixelArt: true,
 });
 
-await game.start();
+await game.start(loader);
 
+console.log(loader);
+
+//@ts-ignore
+const actx = loader.aCtx;
+console.log(actx);
+
+export const noisyActor = new Noisemaker(Resources.hbeat, actx);
 game.add(noisyActor);
+
+export const player = new Player(actx);
 game.add(player);
 
 game.currentScene.camera.strategy.lockToActor(player);
